@@ -170,7 +170,10 @@
 <script>
     let valueDisplay = document.getElementById('valueInput')
     let num1 = ''
+    let num2 = ''
     let operator = ''
+    let lastOperator = ''
+    let lastNum2 = ''
     let pDisplay = document.getElementById('displayLower')
 
     function setInput(num) {
@@ -178,49 +181,62 @@
     }
 
     function setOperator(op) {
+        if (valueDisplay.value === '' && op !== '-' && op !== '+') {
+            alert('Please enter a number first')
+            return
+        }
+
+        if (operator !== '' && valueDisplay.value !== '') {
+            calculateResult()
+        }
+
         num1 = +valueDisplay.value
-        pDisplay.innerHTML += valueDisplay.value
+        pDisplay.innerHTML += valueDisplay.value + op
         valueDisplay.value = ''
         operator = op
     }
 
     function calculateResult() {
-        let num2 = +valueDisplay.value
-        let result
-
-        switch (operator) {
-            case '+':
-                result = num1 + num2
-                pDisplay.innerHTML += `${operator}${num2}`
-                break;
-            case '-':
-                result = num1 - num2
-                pDisplay.innerHTML += `${operator}${num2}`
-                break;
-            case '*':
-                result = num1 * num2
-                pDisplay.innerHTML += `${operator}${num2}`
-                break;
-            case '/':
-                result = num1 / num2
-                pDisplay.innerHTML += `${operator}${num2}`
-                break;
-            case '√':
-                result = Math.sqrt(num1)
-                pDisplay.innerHTML += `${operator}`
-                break;
-
-            default:
-                break;
+        if (valueDisplay.value === '' && lastOperator !== '') {
+            num2 = lastNum2
+            operator = lastOperator
+            num1 = +valueDisplay.value || num1
+        } else {
+            num2 = +valueDisplay.value
         }
 
+        let result
+
+        if (operator === '+') {
+            result = num1 + num2
+        } else if (operator === '-') {
+            result = num1 - num2
+        } else if (operator === '*') {
+            result = num1 * num2
+        } else if (operator === '/') {
+            result = num1 / num2
+        } else if (operator === '√') {
+            result = Math.sqrt(num1)
+        }
+
+        lastOperator = operator
+        lastNum2 = num2
+
+        pDisplay.innerHTML = ''
         valueDisplay.value = result
 
+        num1 = result
+        operator = ''
     }
 
     function clearDisplay() {
         valueDisplay.value = ''
         pDisplay.innerHTML = ''
+        num1 = ''
+        num2 = ''
+        operator = ''
+        lastOperator = ''
+        lastNum2 = ''
     }
 
     function slice() {
